@@ -1,3 +1,5 @@
+import os
+
 def gera_matriz():
     linha = []
     for i in range(10):
@@ -8,15 +10,15 @@ def gera_matriz():
     return linha
 
 
+def mostra_mapa(matriz):
+    for i in range(10):
+        for j in range(10):
+            print(f"{matriz[i][j]}|", end="\n" if j==10 else"")
 
 
-def mostra_mapa():
-    cont = 0
-    for i in range(cont,11):
-        print("_"*21)
-        if cont <11:
-            print("| "*11)
-    print("_"*21)
 
 
-mostra_mapa()
+mapa = gera_matriz()
+
+mapa[0][0] = "O"
+mostra_mapa(mapa)
