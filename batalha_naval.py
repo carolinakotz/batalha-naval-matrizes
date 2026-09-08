@@ -14,8 +14,39 @@ def mostra_mapa(matriz):
             print("-", end="", )
         print()
         for j in range(10):
-            print(f" {matriz[i][j]}  |", end="\n" if j==10 else"")
+            print(f" {matriz[i][j]}  |", end="")
         print()
+
+def cria_lista_navios():
+    navios = [["","","","O","O"],
+              ["","","O","O","O"],
+              ["","O","O","O","O"],
+              ["O","O","O","O","O"]]
+    return navios;
+
+def posiciona_navios(matriz):
+    navios = cria_lista_navios()
+    escolha = -1
+    while(escolha != 0): 
+        mostra_mapa(matriz)
+        print("\t(1)\t(2)\t(3)\t(4)")
+        for i in range(4):
+            for j in range(5):
+                print(f"\t{navios[i][j]}\t", end="")
+            print()
+        escolha = int(input("\nEscolha o naviu que deseja posicionar: "))
+        
+      
+
+    
+
+        
+
+
+
+
+
+
         
 
 
@@ -23,6 +54,4 @@ def mostra_mapa(matriz):
 
 
 mapa = gera_matriz()
-
-mapa[0][0] = "O"
-mostra_mapa(mapa)
+posiciona_navios(mapa)
