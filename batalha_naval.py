@@ -1,3 +1,11 @@
+import os
+import subprocess
+
+def limpa_termianl():
+    if os == "nt":
+        subprocess.run("cls", shell=True)
+    else:
+        subprocess.run("clear")        
 def gera_matriz():
     linha = []
     for i in range(10):
@@ -25,8 +33,9 @@ def cria_navios():
     return navios;
 
 def escolhe_navio():
-    escolha = int(input("Escolha o navio que deseja posicionar: "))
-    match escolha:
+    navio = int(input("Escolha o navio que deseja posicionar: "))
+    match navio:
+        case 0: return "0"
         case 1: return "Submarino"
         case 2: return "Contratorpedeiro"
         case 3: return "Navio-tanque"
@@ -52,26 +61,35 @@ def mostra_navios(navios):
         print(f"\t[{cont}] - {key}")
         print()
 
-def insere_navio(matriz, navios, linha, coluna, escolha):
-    value = navios.get(escolha)                       
-    for i in range(len(value)):
-        if value[i] != "":
-            matriz[linha+i][coluna] = value[i]
+def insere_navio(matriz, navios, linha, coluna, navio):
+    value = navios.get(navio) 
+    direcao = escolhe_direcao()
+    match direcao.lower():
+        case "v":                              
+            for i in range(len(value)):
+                matriz[(linha-1)+i][(coluna-1)] = value[i]
+        case "h":
+            for i in range(len(value)):
+                matriz[(linha-1)][(coluna-1)+i] = value[i]
 
-#def posiciona_navios(matriz):
+def escolhe_direcao():
+    direcao = input("Qual a direção do navio\n[H] - Horizontal\n[V] - Vertical")
+    return direcao
 
 matriz = gera_matriz()
 navios = cria_navios()
-escolha = -1
-while(escolha != 0):
+while(True):
+    limpa_termianl()
     mostra_mapa(matriz)
     mostra_navios(navios)
-    escolha = escolhe_navio()
-    if escolha == None: 
+    navio = escolhe_navio()
+    if navio == None: 
         continue
+    if navio == "0":
+        break
     i = escolhe_posicao_linha()
     j = escolhe_posicao_coluna()
-    insere_navio(matriz,navios,i,j,escolha)
+    insere_navio(matriz,navios,i,j,navio)
 
 # print(len(navios.get("Submarino")))
 # lista = navios.get("Submarino")
