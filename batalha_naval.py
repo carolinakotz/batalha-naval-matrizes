@@ -20,10 +20,10 @@ def gera_matriz():
 
 def mostra_mapa(matriz):
     for i in range(10):
-        for linha in range(39):
+        for linha in range(44):
             print("-", end="")
         print()
-        for j in range(9):
+        for j in range(10):
             print(f" {matriz[i][j] or ' '} |", end="")
         print()
 
