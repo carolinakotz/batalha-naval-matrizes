@@ -65,7 +65,7 @@ def mostra_navios(navios):
 def insere_navio(matriz, navios, linha, coluna, navio):
     navio_lista = navios.get(navio) 
     direcao = escolhe_direcao()
-    if verifica_posicao_invalida(matriz,linha,coluna,navio_lista):
+    if verifica_posicao_invalida(matriz,linha,coluna,navio_lista, direcao):
         match direcao.lower():
             case "v":                              
                 for i in range(len(navio_lista)):
@@ -81,24 +81,29 @@ def escolhe_direcao():
     direcao = input("Qual a direção do navio\n[H] - Horizontal\n[V] - Vertical\n")
     return direcao
 
-def verifica_posicao_invalida(matriz, linha, coluna, navio):
-    if matriz[linha][coluna] == "O":
-        input("Essa posição já está ocupada! Digite outra posição.\t[ENTER para continuar]")
-        return False
-    elif matriz[linha][coluna+1] == "O" or matriz[linha][coluna-1] == "O":
-        input("Posição inválida!\t[ENTER para continuar] ")
-        return False  
-    elif matriz[linha-1][coluna] == "O" or matriz[linha+1][coluna]:
-        input("Posição inválida!\t[ENTER para continuar] ")
-        return False 
-    elif matriz[linha-1][coluna+1] == "O" or matriz[linha-1][coluna-1] == "O":
-        input("Posição inválida!\t[ENTER para continuar] ")
-        return False
-    elif matriz[linha+1][coluna+1] == "O" or matriz[linha+1][coluna-1] == "O":
-        input("Posição inválida!\t[ENTER para continuar] ")
-        return False
-    else:
-        return True
+def verifica_posicao_invalida(matriz, linha, coluna, navio, direcao):
+    for i in range(len(navio)):
+        if matriz[linha][coluna] == "O":
+            input("Essa posição já está ocupada! Digite outra posição.\t[ENTER para continuar]")
+            return False
+        elif matriz[linha][coluna+1] == "O" or matriz[linha][coluna-1] == "O":
+            input("Posição inválida!\t[ENTER para continuar] ")
+            return False  
+        elif matriz[linha-1][coluna] == "O" or matriz[linha+1][coluna]:
+            input("Posição inválida!\t[ENTER para continuar] ")
+            return False 
+        elif matriz[linha-1][coluna+1] == "O" or matriz[linha-1][coluna-1] == "O":
+            input("Posição inválida!\t[ENTER para continuar] ")
+            return False
+        elif matriz[linha+1][coluna+1] == "O" or matriz[linha+1][coluna-1] == "O":
+            input("Posição inválida!\t[ENTER para continuar] ")
+            return False
+        
+        if direcao == "h":
+            coluna += 1
+        else: 
+            linha += 1
+    return True
         
             
 matriz = gera_matriz()
@@ -120,6 +125,7 @@ try:
                 limpa_terminal()
                 mostra_mapa(matriz)
                 continue
+            trocar_
             break
 except Exception as e:
     print(e)
