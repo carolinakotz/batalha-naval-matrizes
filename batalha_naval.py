@@ -24,7 +24,7 @@ def mostra_mapa(matriz):
             print("-", end="")
         print()
         for j in range(9):
-            print(f" {matriz[i][j]}  |", end="")
+            print(f" {matriz[i][j] or ' '} |", end="")
         print()
 
 def cria_navios():
