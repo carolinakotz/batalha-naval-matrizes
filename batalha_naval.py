@@ -1,11 +1,12 @@
 import os
 import subprocess
 
-def limpa_termianl():
+def limpa_terminal():
     if os == "nt":
         subprocess.run("cls", shell=True)
     else:
-        subprocess.run("clear")        
+        subprocess.run("clear")   
+             
 def gera_matriz():
     linha = []
     for i in range(10):
@@ -16,7 +17,7 @@ def gera_matriz():
     return linha
 
 def mostra_mapa(matriz):
-    for i in range(10):
+    for i in range(9):
         for linha in range(39):
             print("-", end="", )
         print()
@@ -62,34 +63,66 @@ def mostra_navios(navios):
         print()
 
 def insere_navio(matriz, navios, linha, coluna, navio):
-    value = navios.get(navio) 
+    navio_lista = navios.get(navio) 
     direcao = escolhe_direcao()
-    match direcao.lower():
-        case "v":                              
-            for i in range(len(value)):
-                matriz[(linha-1)+i][(coluna-1)] = value[i]
-        case "h":
-            for i in range(len(value)):
-                matriz[(linha-1)][(coluna-1)+i] = value[i]
+    if verifica_posicao_invalida(matriz,linha,coluna,navio_lista):
+        match direcao.lower():
+            case "v":                              
+                for i in range(len(navio_lista)):
+                    matriz[linha+i][coluna] = navio_lista[i]
+            case "h":
+                for i in range(len(navio_lista)):
+                    matriz[linha][coluna+i] = navio_lista[i]
+        return True
+    else:
+        return False
 
 def escolhe_direcao():
-    direcao = input("Qual a direção do navio\n[H] - Horizontal\n[V] - Vertical")
+    direcao = input("Qual a direção do navio\n[H] - Horizontal\n[V] - Vertical\n")
     return direcao
 
+def verifica_posicao_invalida(matriz, linha, coluna, navio):
+    if matriz[linha][coluna] == "O":
+        input("Essa posição já está ocupada! Digite outra posição.\t[ENTER para continuar]")
+        return False
+    elif matriz[linha][coluna+1] == "O" or matriz[linha][coluna-1] == "O":
+        input("Posição inválida!\t[ENTER para continuar] ")
+        return False  
+    elif matriz[linha-1][coluna] == "O" or matriz[linha+1][coluna]:
+        input("Posição inválida!\t[ENTER para continuar] ")
+        return False 
+    elif matriz[linha-1][coluna+1] == "O" or matriz[linha-1][coluna-1] == "O":
+        input("Posição inválida!\t[ENTER para continuar] ")
+        return False
+    elif matriz[linha+1][coluna+1] == "O" or matriz[linha+1][coluna-1] == "O":
+        input("Posição inválida!\t[ENTER para continuar] ")
+        return False
+    else:
+        return True
+        
+            
 matriz = gera_matriz()
 navios = cria_navios()
-while(True):
-    limpa_termianl()
-    mostra_mapa(matriz)
-    mostra_navios(navios)
-    navio = escolhe_navio()
-    if navio == None: 
-        continue
-    if navio == "0":
-        break
-    i = escolhe_posicao_linha()
-    j = escolhe_posicao_coluna()
-    insere_navio(matriz,navios,i,j,navio)
+try:
+    while(True):
+        limpa_terminal()
+        mostra_mapa(matriz)
+        mostra_navios(navios)
+        navio = escolhe_navio()
+        if navio == None: 
+            continue
+        if navio == "0":
+            break
+        while True:
+            i = escolhe_posicao_linha()
+            j = escolhe_posicao_coluna()
+            if not insere_navio(matriz,navios,i-1,j-1,navio):
+                limpa_terminal()
+                mostra_mapa(matriz)
+                continue
+            break
+except Exception as e:
+    print(e)
 
 # print(len(navios.get("Submarino")))
 # lista = navios.get("Submarino")
