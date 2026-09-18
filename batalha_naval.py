@@ -36,7 +36,7 @@ def cria_navios():
               "Navio-tanque": ["O","O","O","O"],
               "Porta-aviões": ["O","O","O","O","O"]
               }
-    return navios;
+    return navios
 
 def escolhe_navio():
     navio = int(input("Escolha o navio que deseja posicionar: "))
@@ -128,7 +128,7 @@ try:
         mostra_mapa(matriz)
         mostra_navios(navios)
         navio = escolhe_navio()
-        if navio == None: 
+        if navio is None:
             continue
         if navio == "0":
             break
@@ -139,7 +139,6 @@ try:
                 limpa_terminal()
                 mostra_mapa(matriz)
                 continue
-            trocar_
             break
 except Exception as e:
     print(e)
