@@ -1,7 +1,6 @@
 import os
 import subprocess
 
-
 def limpa_terminal():
     """Limpa o terminal usando o comando adequado ao sistema operacional."""
 
@@ -204,7 +203,12 @@ def atacar(matriz):
     else:
         matriz[i][j] = "X"
               
-        
+def valida_indices(indice):
+    if indice >= 0 or indice <= 10:
+        return True
+    return False
+
+
 matriz = gera_matriz()
 navios = cria_navios()
 navios_adicionados = {}
@@ -232,7 +236,7 @@ try:
                             continue   
                         navios_adicionados.update({navio: [i,j,direcao]}) 
                         break
-                    continue
+            continue
                     
         while True:
             i = escolhe_posicao_linha()
@@ -244,7 +248,7 @@ try:
                 continue    
             break
         navios_adicionados.update({navio: [i,j,direcao]})
-        if len(navios_adicionados == 4):
+        if len(navios_adicionados) ==4:
             resposta = input("Iniciar o jogo ?\t[s]-sim  [n]-não")
             if resposta.lower() == "n":
                 continue
