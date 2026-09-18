@@ -2,10 +2,10 @@ import os
 import subprocess
 
 def limpa_terminal():
-    if os == "nt":
+    if os.name == "nt":
         subprocess.run("cls", shell=True)
     else:
-        subprocess.run("clear")   
+        subprocess.run("clear") 
              
 def gera_matriz():
     linha = []
