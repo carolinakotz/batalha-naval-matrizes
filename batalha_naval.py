@@ -17,13 +17,18 @@ def gera_matriz():
     return linha
 
 def mostra_mapa(matriz):
-    for i in range(9):
-        for linha in range(39):
-            print("-", end="", )
+    print("    1   2   3   4   5   6   7   8   9  10")
+
+    for i in range(len(matriz)):
+        print("  " + "----" * len(matriz) + "-")
+        print(f"{i + 1:2}|", end="")
+
+        for j in range(len(matriz[i])):
+            print(f" {matriz[i][j]:1} |", end="")
+
         print()
-        for j in range(9):
-            print(f" {matriz[i][j]}  |", end="")
-        print()
+
+    print("  " + "----" * len(matriz) + "-")
 
 def cria_navios():
     navios = {"Submarino": ["O","O"],
