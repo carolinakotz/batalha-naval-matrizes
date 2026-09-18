@@ -96,27 +96,36 @@ def escolhe_direcao():
         print("Direção inválida! Digite H ou V.")
 
 def verifica_posicao_invalida(matriz, linha, coluna, navio, direcao):
-    for i in range(len(navio)):
-        if matriz[linha][coluna] == "O":
-            input("Essa posição já está ocupada! Digite outra posição.\t[ENTER para continuar]")
-            return False
-        elif matriz[linha][coluna+1] == "O" or matriz[linha][coluna-1] == "O":
-            input("Posição inválida!\t[ENTER para continuar] ")
-            return False  
-        elif matriz[linha-1][coluna] == "O" or matriz[linha+1][coluna]:
-            input("Posição inválida!\t[ENTER para continuar] ")
-            return False 
-        elif matriz[linha-1][coluna+1] == "O" or matriz[linha-1][coluna-1] == "O":
-            input("Posição inválida!\t[ENTER para continuar] ")
-            return False
-        elif matriz[linha+1][coluna+1] == "O" or matriz[linha+1][coluna-1] == "O":
-            input("Posição inválida!\t[ENTER para continuar] ")
-            return False
-        
+    tamanho = len(navio)
+
+    if linha < 0 or linha >= len(matriz):
+        input("Linha inválida! [ENTER para continuar]")
+        return False
+
+    if coluna < 0 or coluna >= len(matriz[0]):
+        input("Coluna inválida! [ENTER para continuar]")
+        return False
+
+    if direcao == "h" and coluna + tamanho > len(matriz[0]):
+        input("O navio não cabe nessa posição! [ENTER para continuar]")
+        return False
+
+    if direcao == "v" and linha + tamanho > len(matriz):
+        input("O navio não cabe nessa posição! [ENTER para continuar]")
+        return False
+
+    for i in range(tamanho):
         if direcao == "h":
-            coluna += 1
-        else: 
-            linha += 1
+            linha_atual = linha
+            coluna_atual = coluna + i
+        else:
+            linha_atual = linha + i
+            coluna_atual = coluna
+
+        if matriz[linha_atual][coluna_atual] == "O":
+            input("Essa posição já está ocupada! [ENTER para continuar]")
+            return False
+
     return True
         
             
