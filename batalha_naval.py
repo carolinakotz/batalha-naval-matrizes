@@ -83,8 +83,17 @@ def insere_navio(matriz, navios, linha, coluna, navio):
         return False
 
 def escolhe_direcao():
-    direcao = input("Qual a direção do navio\n[H] - Horizontal\n[V] - Vertical\n")
-    return direcao
+    while True:
+        direcao = input(
+            "Qual a direção do navio?\n"
+            "[H] - Horizontal\n"
+            "[V] - Vertical\n"
+        ).lower()
+
+        if direcao == "h" or direcao == "v":
+            return direcao
+
+        print("Direção inválida! Digite H ou V.")
 
 def verifica_posicao_invalida(matriz, linha, coluna, navio, direcao):
     for i in range(len(navio)):
