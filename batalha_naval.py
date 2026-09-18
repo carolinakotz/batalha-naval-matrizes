@@ -123,7 +123,20 @@ def apaga_navio(matriz, navios_adicionados, navio, navios):
         else:
             for i in range(len(navio_lista)):
                 matriz[dados_navio[0]+i][dados_navio[1]] = ""
-            
+
+def busca_navio(matriz, linha, coluna):
+    if matriz[linha][coluna] == "O":
+        return True
+    return False
+
+def atacar(matriz):
+    i = escolhe_posicao_linha()
+    j = escolhe_posicao_coluna()
+    if busca_navio(matriz, i, j):
+        matriz[i][j] = "X"
+    else:
+        matriz[i][j] = "X"
+              
         
 matriz = gera_matriz()
 navios = cria_navios()
@@ -164,6 +177,12 @@ try:
                 continue    
             break
         navios_adicionados.update({navio: [i,j,direcao]})
+        if len(navios_adicionados == 4):
+            resposta = input("Iniciar o jogo ?\t[s]-sim  [n]-não")
+            if resposta.lower() == "n":
+                continue
+            else:
+                break
 except Exception as e:
     print(e)
 
