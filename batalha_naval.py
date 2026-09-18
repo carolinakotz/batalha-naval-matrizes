@@ -2,63 +2,103 @@ import os
 import subprocess
 
 def limpa_terminal():
+    """Limpa o terminal usando o comando adequado ao sistema operacional."""
+
     if os.name == "nt":
         subprocess.run("cls", shell=True)
     else:
-        subprocess.run("clear")   
-             
+        subprocess.run("clear")
+
+
 def gera_matriz():
+    """Cria e retorna uma matriz 10x10 preenchida com strings vazias."""
+
     linha = []
     for i in range(10):
         coluna = []
         for j in range(10):
             coluna.append("")
         linha.append(coluna)
+
     return linha
 
+
 def mostra_mapa(matriz):
-    for i in range(10):
-        for linha in range(39):
-            print("-", end="", )
+    """Exibe o tabuleiro com bordas e numeração das linhas e colunas."""
+
+    print("    A   B   C   D   E   F   G   H   I   J")
+
+    for i in range(len(matriz)):
+        print("  " + "----" * len(matriz) + "-")
+        print(f"{i + 1:2}|", end="")
+        for j in range(len(matriz[i])):
+            print(f" {matriz[i][j]:1} |", end="")
         print()
-        for j in range(9):
-            print(f" {matriz[i][j]}  |", end="")
-        print()
+
+    print("  " + "----" * len(matriz) + "-")
+
 
 def cria_navios():
-    navios = {"Submarino": ["O","O"],
-              "Contratorpedeiro" : ["O","O","O"],
-              "Navio-tanque": ["O","O","O","O"],
-              "Porta-aviões": ["O","O","O","O","O"]
-              }
-    return navios;
+    """Retorna um dicionário em que cada 'O' representa uma parte do navio."""
+
+    navios = {
+        "Submarino": ["O", "O"],
+        "Contratorpedeiro": ["O", "O", "O"],
+        "Navio-tanque": ["O", "O", "O", "O"],
+        "Porta-aviões": ["O", "O", "O", "O", "O"]
+    }
+
+    return navios
+
 
 def escolhe_navio():
+    """
+    Solicita uma opção numérica e retorna o nome do navio.
+
+    Retorna '0' para sair ou None se o número não corresponder a uma opção.
+    """
+
     navio = int(input("Escolha o navio que deseja posicionar: "))
+
     match navio:
-        case 0: return "0"
-        case 1: return "Submarino"
-        case 2: return "Contratorpedeiro"
-        case 3: return "Navio-tanque"
-        case 4: return "Porta-aviões"
-        case _: 
-            print("Não é uma escolha válida!") 
-    return None  
+        case 0:
+            return "0"
+        case 1:
+            return "Submarino"
+        case 2:
+            return "Contratorpedeiro"
+        case 3:
+            return "Navio-tanque"
+        case 4:
+            return "Porta-aviões"
+        case _:
+            print("Não é uma escolha válida!")
+
+    return None
+
 
 def escolhe_posicao_linha():
+    """Solicita e retorna a linha como inteiro, sem validar seus limites."""
+
     i = int(input("Digite a linha: "))
     return i-1
 
+
 def escolhe_posicao_coluna():
+    """Solicita e retorna a coluna como inteiro, sem validar seus limites."""
+
     j = int(input("Digite a coluna: "))
     return j-1
 
+
 def mostra_navios(navios):
+    """Exibe os nomes, as partes e as opções numéricas dos navios."""
+
     cont = 0
     for key, value in navios.items():
         for i in range(len(value)):
             print(f"{value[i]}", end="")
-        cont+=1
+        cont += 1
         print(f"\t[{cont}] - {key}")
         print()
 
@@ -66,42 +106,72 @@ def insere_navio(matriz, navios, linha, coluna, navio, direcao):
     navio_lista = navios.get(navio) 
     if verifica_posicao_invalida(matriz,linha,coluna,navio_lista, direcao):
         match direcao.lower():
-            case "v":                              
+            case "v":
                 for i in range(len(navio_lista)):
-                    matriz[linha+i][coluna] = navio_lista[i]
+                    matriz[linha + i][coluna] = navio_lista[i]
             case "h":
                 for i in range(len(navio_lista)):
-                    matriz[linha][coluna+i] = navio_lista[i]
+                    matriz[linha][coluna + i] = navio_lista[i]
         return True
     else:
         return False
 
+
 def escolhe_direcao():
-    direcao = input("Qual a direção do navio\n[H] - Horizontal\n[V] - Vertical\n")
-    return direcao
+    """Repete a pergunta até receber H ou V e retorna 'h' ou 'v'."""
+
+    while True:
+        direcao = input(
+            "Qual a direção do navio?\n"
+            "[H] - Horizontal\n"
+            "[V] - Vertical\n"
+        ).lower()
+
+        if direcao == "h" or direcao == "v":
+            return direcao
+
+        print("Direção inválida! Digite H ou V.")
+
 
 def verifica_posicao_invalida(matriz, linha, coluna, navio, direcao):
-    for i in range(len(navio)):
-        if matriz[linha][coluna] == "O":
-            input("Essa posição já está ocupada! Digite outra posição.\t[ENTER para continuar]")
-            return False
-        elif matriz[linha][coluna+1] == "O" or matriz[linha][coluna-1] == "O":
-            input("Posição inválida!\t[ENTER para continuar] ")
-            return False  
-        elif matriz[linha-1][coluna] == "O" or matriz[linha+1][coluna]:
-            input("Posição inválida!\t[ENTER para continuar] ")
-            return False 
-        elif matriz[linha-1][coluna+1] == "O" or matriz[linha-1][coluna-1] == "O":
-            input("Posição inválida!\t[ENTER para continuar] ")
-            return False
-        elif matriz[linha+1][coluna+1] == "O" or matriz[linha+1][coluna-1] == "O":
-            input("Posição inválida!\t[ENTER para continuar] ")
-            return False
-        
+    """
+    Verifica se o navio cabe no tabuleiro e não sobrepõe outro navio.
+
+    Recebe índices a partir de zero e direção 'h' ou 'v'.
+    Retorna True para posição válida e False para inválida.
+    Permite navios encostados.
+    """
+
+    tamanho = len(navio)
+
+    if linha < 0 or linha >= len(matriz):
+        input("Linha inválida! [ENTER para continuar]")
+        return False
+
+    if coluna < 0 or coluna >= len(matriz[0]):
+        input("Coluna inválida! [ENTER para continuar]")
+        return False
+
+    if direcao == "h" and coluna + tamanho > len(matriz[0]):
+        input("O navio não cabe nessa posição! [ENTER para continuar]")
+        return False
+
+    if direcao == "v" and linha + tamanho > len(matriz):
+        input("O navio não cabe nessa posição! [ENTER para continuar]")
+        return False
+
+    for i in range(tamanho):
         if direcao == "h":
-            coluna += 1
-        else: 
-            linha += 1
+            linha_atual = linha
+            coluna_atual = coluna + i
+        else:
+            linha_atual = linha + i
+            coluna_atual = coluna
+
+        if matriz[linha_atual][coluna_atual] == "O":
+            input("Essa posição já está ocupada! [ENTER para continuar]")
+            return False
+
     return True
 
 def arruma_posicao():
@@ -143,7 +213,7 @@ matriz = gera_matriz()
 navios = cria_navios()
 navios_adicionados = {}
 try:
-    while(True):
+    while True:
         limpa_terminal()
         mostra_mapa(matriz)
         mostra_navios(navios)
