@@ -1,23 +1,27 @@
 import os
 import subprocess
 
+# def tela_inicial(){
+#     print("\t====BATALHA NAVAL====")
+#     opc = int(input("\t[1]"))
+# }
 def limpa_terminal():
-    if os == "nt":
+    if os.name == "nt":
         subprocess.run("cls", shell=True)
     else:
         subprocess.run("clear")   
              
 def gera_matriz():
     linha = []
-    for i in range(10):
+    for i in range(11):
         coluna = []
-        for j in range(10):
+        for j in range(11):
             coluna.append("")
         linha.append(coluna)
     return linha
 
 def mostra_mapa(matriz):
-    for i in range(9):
+    for i in range(10):
         for linha in range(39):
             print("-", end="", )
         print()
@@ -47,11 +51,11 @@ def escolhe_navio():
 
 def escolhe_posicao_linha():
     i = int(input("Digite a linha: "))
-    return i
+    return i-1
 
 def escolhe_posicao_coluna():
     j = int(input("Digite a coluna: "))
-    return j
+    return j-1
 
 def mostra_navios(navios):
     cont = 0
@@ -62,9 +66,8 @@ def mostra_navios(navios):
         print(f"\t[{cont}] - {key}")
         print()
 
-def insere_navio(matriz, navios, linha, coluna, navio):
+def insere_navio(matriz, navios, linha, coluna, navio, direcao):
     navio_lista = navios.get(navio) 
-    direcao = escolhe_direcao()
     if verifica_posicao_invalida(matriz,linha,coluna,navio_lista, direcao):
         match direcao.lower():
             case "v":                              
@@ -104,32 +107,82 @@ def verifica_posicao_invalida(matriz, linha, coluna, navio, direcao):
         else: 
             linha += 1
     return True
+
+def arruma_posicao():
+    resposta = int(input("Deseja mudar a posição\n[1] - sim\n[2] - não"))
+    if resposta == 1:
+        return True
+    return False    
+     
+def apaga_navio(matriz, navios_adicionados, navio, navios):
+        dados_navio = navios_adicionados.get(navio)
+        navio_lista = navios.get(navio)
+        if dados_navio[2].lower() == "h":
+            for i in range(len(navio_lista)):
+                matriz[dados_navio[0]][dados_navio[1]+i] = ""
+        else:
+            for i in range(len(navio_lista)):
+                matriz[dados_navio[0]+i][dados_navio[1]] = ""
+
+def busca_navio(matriz, linha, coluna):
+    if matriz[linha][coluna] == "O":
+        return True
+    return False
+
+def atacar(matriz):
+    i = escolhe_posicao_linha()
+    j = escolhe_posicao_coluna()
+    if busca_navio(matriz, i, j):
+        matriz[i][j] = "X"
+    else:
+        matriz[i][j] = "X"
+              
         
-            
 matriz = gera_matriz()
 navios = cria_navios()
+navios_adicionados = {}
 try:
     while(True):
         limpa_terminal()
         mostra_mapa(matriz)
         mostra_navios(navios)
-        navio = escolhe_navio()
+        navio = escolhe_navio()        
         if navio == None: 
             continue
         if navio == "0":
             break
+        if (len(navios_adicionados) > 0):
+            if navio in navios_adicionados.keys():
+                if arruma_posicao():
+                    apaga_navio(matriz,navios_adicionados,navio,navios)
+                    while True:
+                        i = escolhe_posicao_linha()
+                        j = escolhe_posicao_coluna()
+                        direcao = escolhe_direcao()
+                        if not insere_navio(matriz,navios,i,j,navio, direcao):
+                            limpa_terminal()
+                            mostra_mapa(matriz)
+                            continue   
+                        navios_adicionados.update({navio: [i,j,direcao]}) 
+                        break
+                    continue
+                    
         while True:
             i = escolhe_posicao_linha()
             j = escolhe_posicao_coluna()
-            if not insere_navio(matriz,navios,i-1,j-1,navio):
+            direcao = escolhe_direcao()
+            if not insere_navio(matriz,navios,i,j,navio, direcao):
                 limpa_terminal()
                 mostra_mapa(matriz)
-                continue
-            trocar_
+                continue    
             break
+        navios_adicionados.update({navio: [i,j,direcao]})
+        if len(navios_adicionados == 4):
+            resposta = input("Iniciar o jogo ?\t[s]-sim  [n]-não")
+            if resposta.lower() == "n":
+                continue
+            else:
+                break
 except Exception as e:
     print(e)
 
-# print(len(navios.get("Submarino")))
-# lista = navios.get("Submarino")
-# lista.__delattr__
