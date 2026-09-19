@@ -79,16 +79,31 @@ def escolhe_navio():
 
 def escolhe_posicao_linha():
     """Solicita e retorna a linha como inteiro, sem validar seus limites."""
-
-    i = int(input("Digite a linha: "))
-    return i-1
+    while True:
+        i = int(input("Digite a linha: "))
+        if valida_linha(i-1):
+            return i-1
+        print("Linha inválida!")
 
 
 def escolhe_posicao_coluna():
     """Solicita e retorna a coluna como inteiro, sem validar seus limites."""
-
-    j = int(input("Digite a coluna: "))
-    return j-1
+    while True:
+        j = input("Digite a coluna: ")
+        j.lower()
+        if valida_coluna_letra(j):
+            match j:
+                case "a" : return 0
+                case "b" : return 1
+                case "c" : return 2
+                case "d" : return 3
+                case "e" : return 4
+                case "f" : return 5
+                case "g" : return 6
+                case "h" : return 7
+                case "i" : return 8
+                case "j" : return 9
+        print("Coluna inválida!")
 
 
 def mostra_navios(navios):
@@ -132,6 +147,28 @@ def escolhe_direcao():
 
         print("Direção inválida! Digite H ou V.")
 
+def verifica_existencia_tablueiro(matriz, linha, coluna):
+    return  linha >= 0 and linha < len(matriz) and coluna >= 0 and coluna < len(matriz)
+
+def verifica_posicao_ocupada(matriz,linha,coluna):
+    return verifica_existencia_tablueiro and matriz[linha][coluna] == "O" 
+
+def verifica_navio_cabe(matriz, linha, coluna, tamanho, direcao):
+    if direcao == "h":
+        return coluna + tamanho <= len(matriz)
+    else:
+        return linha + tamanho <= len(matriz) 
+
+def verifica_vizinhanca(matriz, linha, coluna):
+    if matriz[linha][coluna+1] == "O" or matriz[linha][coluna-1] == "O":
+        return True 
+    elif matriz[linha-1][coluna] == "O" or matriz[linha+1][coluna] == "O":
+        return True 
+    elif matriz[linha-1][coluna+1] == "O" or matriz[linha-1][coluna-1] == "O":
+        return True
+    elif matriz[linha+1][coluna+1] == "O" or matriz[linha+1][coluna-1] == "O":
+        return True
+    return False
 
 def verifica_posicao_invalida(matriz, linha, coluna, navio, direcao):
     """
@@ -141,44 +178,28 @@ def verifica_posicao_invalida(matriz, linha, coluna, navio, direcao):
     Retorna True para posição válida e False para inválida.
     Permite navios encostados.
     """
-
-    tamanho = len(navio)
-
-    if linha < 0 or linha >= len(matriz):
-        input("Linha inválida! [ENTER para continuar]")
+    tamanho_navio = len(navio)
+    if not verifica_navio_cabe(matriz, linha, coluna, tamanho_navio, direcao):
+        input("O navio não cabe nesta posiçã!\t[ENTER para continuar]")
         return False
-
-    if coluna < 0 or coluna >= len(matriz[0]):
-        input("Coluna inválida! [ENTER para continuar]")
-        return False
-
-    if direcao == "h" and coluna + tamanho > len(matriz[0]):
-        input("O navio não cabe nessa posição! [ENTER para continuar]")
-        return False
-
-    if direcao == "v" and linha + tamanho > len(matriz):
-        input("O navio não cabe nessa posição! [ENTER para continuar]")
-        return False
-
-    for i in range(tamanho):
+    
+    for _ in range(tamanho_navio):
+        if verifica_posicao_ocupada(matriz, linha, coluna):
+            input("Essa posição já está ocupada!\t[ENTER para continuar]")
+            return False    
+        if verifica_vizinhanca(matriz, linha, coluna):
+            input("Posição inválida!\t[ENTER para continuar]")  
+            return False   
         if direcao == "h":
-            linha_atual = linha
-            coluna_atual = coluna + i
-        else:
-            linha_atual = linha + i
-            coluna_atual = coluna
-
-        if matriz[linha_atual][coluna_atual] == "O":
-            input("Essa posição já está ocupada! [ENTER para continuar]")
-            return False
-
+            coluna += 1
+        else: 
+            linha += 1
     return True
 
-def arruma_posicao():
-    resposta = int(input("Deseja mudar a posição\n[1] - sim\n[2] - não"))
-    if resposta == 1:
-        return True
-    return False    
+def arruma_posicao(matriz,navios_adicionados,navio,navios):
+    apaga_navio(matriz,navios_adicionados,navio,navios)
+    escolhe_posicao(matriz, navios, navio, navios_adicionados)
+ 
      
 def apaga_navio(matriz, navios_adicionados, navio, navios):
         dados_navio = navios_adicionados.get(navio)
@@ -203,11 +224,28 @@ def atacar(matriz):
     else:
         matriz[i][j] = "X"
               
-def valida_indices(indice):
-    if indice >= 0 or indice <= 10:
+def valida_linha(indice):
+    if indice >= 0 and indice <= 9:
         return True
     return False
 
+def valida_coluna_letra(j):
+    colunas_validas = ("a", "b", "c", "d", "e","f","g", "h", "i", "j")
+    if j in colunas_validas:
+        return True
+    return False
+
+def escolhe_posicao(matriz, navios, navio, navios_adicionados): 
+    while True:
+        i = escolhe_posicao_linha()
+        j = escolhe_posicao_coluna()
+        direcao = escolhe_direcao()
+        if not insere_navio(matriz,navios,i,j,navio, direcao):
+            limpa_terminal()
+            mostra_mapa(matriz)
+            continue 
+        break  
+    navios_adicionados.update({navio: [i,j,direcao]})
 
 matriz = gera_matriz()
 navios = cria_navios()
@@ -222,32 +260,17 @@ try:
             continue
         if navio == "0":
             break
-        if (len(navios_adicionados) > 0):
-            if navio in navios_adicionados.keys():
-                if arruma_posicao():
-                    apaga_navio(matriz,navios_adicionados,navio,navios)
-                    while True:
-                        i = escolhe_posicao_linha()
-                        j = escolhe_posicao_coluna()
-                        direcao = escolhe_direcao()
-                        if not insere_navio(matriz,navios,i,j,navio, direcao):
-                            limpa_terminal()
-                            mostra_mapa(matriz)
-                            continue   
-                        navios_adicionados.update({navio: [i,j,direcao]}) 
-                        break
-            continue
-                    
-        while True:
-            i = escolhe_posicao_linha()
-            j = escolhe_posicao_coluna()
-            direcao = escolhe_direcao()
-            if not insere_navio(matriz,navios,i,j,navio, direcao):
+        if navio in navios_adicionados.keys():
+            resposta = int(input("Deseja mudar a posição\n[1] - sim\n[2] - não\n"))
+            if resposta == 1:
+                arruma_posicao(matriz,navios_adicionados,navio,navios)
+            else:
                 limpa_terminal()
                 mostra_mapa(matriz)
-                continue    
-            break
-        navios_adicionados.update({navio: [i,j,direcao]})
+                mostra_navios(navios)
+                navio = escolhe_navio() 
+                            
+        escolhe_posicao(matriz,navios,navio, navios_adicionados)
         if len(navios_adicionados) ==4:
             resposta = input("Iniciar o jogo ?\t[s]-sim  [n]-não")
             if resposta.lower() == "n":
