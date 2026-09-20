@@ -146,28 +146,51 @@ def escolhe_direcao():
 
         print("Direção inválida! Digite H ou V.")
 
-def verifica_existencia_tablueiro(matriz, linha, coluna):
-    return  linha >= 0 and linha < len(matriz) and coluna >= 0 and coluna < len(matriz)
+def verifica_existencia_tabuleiro(matriz, linha, coluna):
+    """Retorna True se a linha e a coluna existirem no tabuleiro."""
 
-def verifica_posicao_ocupada(matriz,linha,coluna):
-    return verifica_existencia_tablueiro and matriz[linha][coluna] == "O" 
+    return (
+        0 <= linha < len(matriz)
+        and 0 <= coluna < len(matriz[linha])
+    )
+
+
+def verifica_posicao_ocupada(matriz, linha, coluna):
+    """Retorna True se a posição existir e contiver um navio."""
+
+    return (
+        verifica_existencia_tabuleiro(matriz, linha, coluna)
+        and matriz[linha][coluna] == "O"
+    )
+
 
 def verifica_navio_cabe(matriz, linha, coluna, tamanho, direcao):
+    """Verifica se a posição inicial existe e o navio cabe na direção indicada."""
+
+    if not verifica_existencia_tabuleiro(matriz, linha, coluna):
+        return False
     if direcao == "h":
-        return coluna + tamanho <= len(matriz)
-    else:
-        return linha + tamanho <= len(matriz) 
+        return coluna + tamanho <= len(matriz[linha])
+    if direcao == "v":
+        return linha + tamanho <= len(matriz)
+
+    return False
+
 
 def verifica_vizinhanca(matriz, linha, coluna):
-    if matriz[linha][coluna+1] == "O" or matriz[linha][coluna-1] == "O":
-        return True 
-    elif matriz[linha-1][coluna] == "O" or matriz[linha+1][coluna] == "O":
-        return True 
-    elif matriz[linha-1][coluna+1] == "O" or matriz[linha-1][coluna-1] == "O":
-        return True
-    elif matriz[linha+1][coluna+1] == "O" or matriz[linha+1][coluna-1] == "O":
-        return True
+    """Verifica se existe um navio nas oito posições vizinhas."""
+
+    for linha_vizinha in range(linha - 1, linha + 2):
+        for coluna_vizinha in range(coluna - 1, coluna + 2):
+            if linha_vizinha == linha and coluna_vizinha == coluna:
+                continue
+            if verifica_posicao_ocupada(
+                matriz, linha_vizinha, coluna_vizinha
+            ):
+                return True
+
     return False
+
 
 def verifica_posicao_invalida(matriz, linha, coluna, navio, direcao):
     """
