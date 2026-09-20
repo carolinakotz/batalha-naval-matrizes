@@ -118,7 +118,7 @@ def mostra_navios(navios):
 
 def insere_navio(matriz, navios, linha, coluna, navio, direcao):
     navio_lista = navios.get(navio) 
-    if verifica_posicao_invalida(matriz,linha,coluna,navio_lista, direcao):
+    if verifica_posicao_valida(matriz,linha,coluna,navio_lista, direcao):
         match direcao.lower():
             case "v":
                 for i in range(len(navio_lista)):
@@ -192,17 +192,16 @@ def verifica_vizinhanca(matriz, linha, coluna):
     return False
 
 
-def verifica_posicao_invalida(matriz, linha, coluna, navio, direcao):
+def verifica_posicao_valida(matriz, linha, coluna, navio, direcao):
     """
-    Verifica se o navio cabe no tabuleiro e não sobrepõe outro navio.
+    Verifica se o navio cabe sem sobrepor ou encostar em outro navio.
 
     Recebe índices a partir de zero e direção 'h' ou 'v'.
     Retorna True para posição válida e False para inválida.
-    Permite navios encostados.
     """
     tamanho_navio = len(navio)
     if not verifica_navio_cabe(matriz, linha, coluna, tamanho_navio, direcao):
-        input("O navio não cabe nesta posiçã!\t[ENTER para continuar]")
+        input("O navio não cabe nesta posição!\t[ENTER para continuar]")
         return False
     
     for _ in range(tamanho_navio):
