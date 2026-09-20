@@ -295,35 +295,46 @@ def escolhe_posicao(matriz, navios, navio, navios_adicionados):
         break  
     navios_adicionados.update({navio: [i,j,direcao]})
 
+
+def confirma_inicio():
+    """Retorna True para iniciar ou False para continuar a preparação."""
+
+    while True:
+        resposta = input(
+            "Iniciar o jogo?\n"
+            "[S] - Sim\n"
+            "[N] - Não\n"
+        ).lower()
+        if resposta == "s":
+            return True
+        if resposta == "n":
+            return False
+        print("Opção inválida! Digite S ou N.")
+
+
 matriz = gera_matriz()
 navios = cria_navios()
 navios_adicionados = {}
-try:
-    while True:
-        limpa_terminal()
-        mostra_mapa(matriz)
-        mostra_navios(navios)
-        navio = escolhe_navio()        
-        if navio == None: 
-            continue
-        if navio == "0":
-            break
-        if navio in navios_adicionados.keys():
-            if confirma_reposicionamento():
-                arruma_posicao(matriz,navios_adicionados,navio,navios)
-            else:
-                limpa_terminal()
-                mostra_mapa(matriz)
-                mostra_navios(navios)
-                navio = escolhe_navio() 
-                            
-        escolhe_posicao(matriz,navios,navio, navios_adicionados)
-        if len(navios_adicionados) ==4:
-            resposta = input("Iniciar o jogo ?\t[s]-sim  [n]-não")
-            if resposta.lower() == "n":
-                continue
-            else:
-                break
-except Exception as e:
-    print(e)
 
+while True:
+    limpa_terminal()
+    mostra_mapa(matriz)
+    mostra_navios(navios)
+
+    navio = escolhe_navio()
+    if navio is None:
+        continue
+    if navio == "0":
+        break
+
+    if navio in navios_adicionados:
+        if confirma_reposicionamento():
+            arruma_posicao(matriz, navios_adicionados, navio, navios)
+        else:
+            continue
+    else:
+        escolhe_posicao(matriz, navios, navio, navios_adicionados)
+
+    if len(navios_adicionados) == len(navios):
+        if confirma_inicio():
+            break
