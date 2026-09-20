@@ -87,10 +87,9 @@ def escolhe_posicao_linha():
 
 
 def escolhe_posicao_coluna():
-    """Solicita e retorna a coluna como inteiro, sem validar seus limites."""
+    """Solicita uma letra de A a J e retorna o índice da coluna de 0 a 9."""
     while True:
-        j = input("Digite a coluna: ")
-        j.lower()
+        j = input("Digite a coluna: ").lower()
         if valida_coluna_letra(j):
             match j:
                 case "a" : return 0
