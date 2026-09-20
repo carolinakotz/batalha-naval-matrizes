@@ -265,12 +265,23 @@ def busca_navio(matriz, linha, coluna):
     return False
 
 def atacar(matriz):
-    i = escolhe_posicao_linha()
-    j = escolhe_posicao_coluna()
-    if busca_navio(matriz, i, j):
-        matriz[i][j] = "X"
-    else:
-        matriz[i][j] = "X"
+    """Registra um ataque, impedindo tiros repetidos, e retorna se houve acerto."""
+
+    while True:
+        i = escolhe_posicao_linha()
+        j = escolhe_posicao_coluna()
+
+        if matriz[i][j] == "X" or matriz[i][j] == "~":
+            print("Você já atacou essa posição! Escolha outra.")
+            continue
+        if busca_navio(matriz, i, j):
+            matriz[i][j] = "X"
+            print("Acertou um navio!")
+            return True
+        else:
+            matriz[i][j] = "~"
+            print("Acertou a água!")
+            return False
               
 def valida_linha(indice):
     if indice >= 0 and indice <= 9:
