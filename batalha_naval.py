@@ -51,6 +51,32 @@ def cria_navios():
     return navios
 
 
+def le_inteiro(mensagem):
+    """Repete a leitura até o jogador digitar um número inteiro."""
+
+    while True:
+        try:
+            return int(input(mensagem))
+        except ValueError:
+            print("Entrada inválida! Digite um número inteiro.")
+
+
+def confirma_reposicionamento():
+    """Retorna True para mudar a posição e False para manter o navio."""
+
+    while True:
+        resposta = le_inteiro(
+            "Deseja mudar a posição?\n"
+            "[1] - Sim\n"
+            "[2] - Não\n"
+        )
+        if resposta == 1:
+            return True
+        if resposta == 2:
+            return False
+        print("Opção inválida! Digite 1 ou 2.")
+
+
 def escolhe_navio():
     """
     Solicita uma opção numérica e retorna o nome do navio.
@@ -58,8 +84,8 @@ def escolhe_navio():
     Retorna '0' para sair ou None se o número não corresponder a uma opção.
     """
 
-    navio = int(input("Escolha o navio que deseja posicionar: "))
-
+    navio = le_inteiro("Escolha o navio que deseja posicionar: ")
+    
     match navio:
         case 0:
             return "0"
@@ -78,12 +104,13 @@ def escolhe_navio():
 
 
 def escolhe_posicao_linha():
-    """Solicita e retorna a linha como inteiro, sem validar seus limites."""
+    """Solicita uma linha de 1 a 10 e retorna seu índice de 0 a 9."""
+
     while True:
-        i = int(input("Digite a linha: "))
-        if valida_linha(i-1):
-            return i-1
-        print("Linha inválida!")
+        i = le_inteiro("Digite a linha: ")
+        if valida_linha(i - 1):
+            return i - 1
+        print("Linha inválida! Digite um número de 1 a 10.")
 
 
 def escolhe_posicao_coluna():
@@ -282,8 +309,7 @@ try:
         if navio == "0":
             break
         if navio in navios_adicionados.keys():
-            resposta = int(input("Deseja mudar a posição\n[1] - sim\n[2] - não\n"))
-            if resposta == 1:
+            if confirma_reposicionamento():
                 arruma_posicao(matriz,navios_adicionados,navio,navios)
             else:
                 limpa_terminal()
