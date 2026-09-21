@@ -401,7 +401,11 @@ def escolhe_posicao(matriz, navios, navio, navios_adicionados):
  
  
 def arruma_posicao(matriz, navios_adicionados, navio, navios):
+    """Remove o navio, atualiza o mapa e solicita uma nova posição."""
+
     apaga_navio(matriz, navios_adicionados, navio, navios)
+    limpa_terminal()
+    mostra_mapa(matriz)
     escolhe_posicao(matriz, navios, navio, navios_adicionados)
  
  
