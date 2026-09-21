@@ -434,7 +434,6 @@ def ja_atacada(matriz, linha, coluna):
 def recebe_ataque(matriz, navios, navios_adicionados, linha, coluna):
     """
     Aplica um tiro no mapa e nos navios associados a ele.
- 
     Se acertar, marca 'X' no mapa e na parte correspondente do navio.
     Se errar, marca '~' no mapa.
     Retorna um dicionário com 'linha', 'coluna', 'acertou', 'navio' (nome do
